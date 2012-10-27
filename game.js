@@ -6,7 +6,7 @@ function Game(canvas, context) {
 
   this.onFrame = function() {
     this.renderer.clear();
-    this.pos += 5;
+    this.pos += 10;
     this.renderer.draw(this.pos);
   };
 
