@@ -2,12 +2,17 @@ var FPS = 30;
 
 function Game(canvas, context) {
   this.renderer = new Renderer(canvas, context);
-  this.pos = 0;
 
   this.onFrame = function() {
+    this.update();
+    this.draw();
+  };
+
+  this.update = function() {
+  };
+
+  this.draw = function() {
     this.renderer.clear();
-    this.pos += 5;
-    this.renderer.draw(this.pos);
   };
 
   this.start = function() {
