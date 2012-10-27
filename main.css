@@ -1,0 +1,13 @@
+body {
+  margin: 2px;
+  background-color: #191919;
+}
+
+.canvas-container {
+  text-align: center;
+}
+
+#canvas {
+  border: 1px solid #729;
+  background-color: #000;
+}
