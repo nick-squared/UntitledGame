@@ -7,6 +7,20 @@ body {
   text-align: center;
 }
 
+.canvas-container a {
+  color: #FFF;
+  font: 19px Verdana;
+
+  transition: color 0.5s;
+  -moz-transition: color 0.5s;
+  -webkit-transition: color 0.5s;
+  -o-transition: color 0.5s;
+}
+
+.canvas-container a:hover {
+  color: #729;
+}
+
 #canvas {
   border: 1px solid #729;
   background-color: #000;
