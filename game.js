@@ -5,16 +5,16 @@ function Game(canvas, context) {
   this.branches = [];
 
   var testBranchList = [];
-  for (var i = 0; i < 30; i++) {
-    testBranchList[i] = [50 + i * 25, 200 - Math.pow(i, 3)];
+  for (var i = 0; i < 50; i++) {
+    testBranchList[i] = [50 + i * 15, 200 - 5 * Math.sin(i) - 2 * i];
   }
   this.testBranch = new Branch(testBranchList);
   this.branches.push(this.testBranch);
   this.player = new Player();
   this.player.onGround = true;
   this.player.currentSegment = this.testBranch.segments[0];
-  this.player.x = this.player.currentSegment.center[0] + this.player.width / 2 * Math.cos(this.player.currentSegment.normal);
-  this.player.y = this.player.currentSegment.center[1] - this.player.height / 2 * Math.sin(this.player.currentSegment.normal);
+  this.player.pos[0] = this.player.currentSegment.center[0] + this.player.width / 2 * Math.cos(this.player.currentSegment.normal);
+  this.player.pos[1] = this.player.currentSegment.center[1] - this.player.height / 2 * Math.sin(this.player.currentSegment.normal);
 
   this.onFrame = function() {
     this.update();

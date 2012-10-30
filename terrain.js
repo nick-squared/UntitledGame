@@ -1,8 +1,10 @@
-function BranchSegment(p1, p2) {
+function BranchSegment(branch, start, p1, p2) {
+  this.branch = branch;
   // Points organized like so: [x, y].
   this.p1 = p1;
   this.p2 = p2;
   this.center = [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2];
+  this.start = start;
   this.length = Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
   // Stored in radians.
   this.rotation = Math.atan2(this.p2[1] - this.p1[1], this.p2[0] - this.p1[0]);
@@ -16,41 +18,6 @@ function BranchSegment(p1, p2) {
     targetSegment.right = this;
   };
 
-  this.centerOver = function(p) {
-    return Math.abs(this.parallelDisplacement(p)) <= this.length / 2;
-  };
-
-  this.whereIs = function(p) {
-    // Returns the segment that p is closest to, or undefined if it is not on any.
-    var d = this.parallelDisplacement(p);
-    var target = undefined;
-    if (d > this.length / 2) {
-      target = this.right;
-      while (target != undefined) {
-        if (target.centerOver(p)) {
-          return target;
-        } else {
-          target = target.right;
-        }
-        return false;
-      }
-      console.log('right');
-    } else if (d < -this.length / 2) {
-      target = this.left;
-      while (target != undefined) {
-        if (target.centerOver(p)) {
-          return target;
-        } else {
-          target = target.left;
-        }
-        return false;
-      }
-      console.log('left');
-    } else {
-      return this;
-    }
-  };
-
   this.parallelDisplacement = function (p) {
     // Some fancy dot product right here.
     var hyp = Math.sqrt(Math.pow(p[0] - this.center[0], 2) + Math.pow(p[1] - this.center[1], 2));
@@ -58,10 +25,11 @@ function BranchSegment(p1, p2) {
     return Math.cos(angle) * hyp;
   };
 
-  this.getPositionAbove = function(p, vDist) {
-    var pDist = this.parallelDisplacement(p);
-    var aboveCenter = [this.center[0] + Math.cos(this.normal) * vDist, this.center[1] - Math.sin(this.normal) * vDist];
-    return [aboveCenter[0] + Math.cos(this.rotation) * pDist, aboveCenter[1] - Math.sin(this.rotation) * pDist];
+  this.getPositionAbove = function(x, vDist) {
+    x -= this.start;
+    var posX = p1[0] + (this.p2[0] - this.p1[0]) / this.length * x;
+    var posY = p1[1] + (this.p2[1] - this.p1[1]) / this.length * x;
+    return [posX - Math.cos(this.normal) * vDist, posY - Math.sin(this.normal) * vDist];
   };
 
   this.draw = function(context) {
@@ -80,8 +48,10 @@ function BranchSegment(p1, p2) {
 
 function Branch(indices) {
   this.segments = [];
+  this.length = 0;
   for (var i = 0; i < indices.length - 1; i++) {
-    var segment = new BranchSegment(indices[i], indices[i + 1]);
+    var segment = new BranchSegment(this, this.length, indices[i], indices[i + 1]);
+    this.length += segment.length;
     if (i > 0) {
       segment.setLeft(this.segments[i-1]);
     }
@@ -91,6 +61,17 @@ function Branch(indices) {
   this.draw = function(context) {
     for (var i = 0; i < this.segments.length; i++) {
       this.segments[i].draw(context);
+    }
+  };
+
+  this.getSegment = function(x) {
+    if (x < 0 || x > this.length) {
+      return false;
+    }
+    for (var i = 0;i < this.segments.length; i++) {
+      if (x - this.segments[i].start < this.segments[i].length) {
+        return this.segments[i];
+      }
     }
   };
 }
