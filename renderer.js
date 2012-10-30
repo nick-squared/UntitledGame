@@ -1,4 +1,5 @@
-function Renderer(canvas, context) {
+function Renderer(game, canvas, context) {
+  this.game = game;
   this.canvas = canvas;
   this.width = canvas.width;
   this.height = canvas.height;
@@ -10,6 +11,10 @@ function Renderer(canvas, context) {
   };
 
   this.draw = function() {
+    for (var i = 0; i < this.game.branches.length; i++) {
+      this.game.branches[i].draw(this.context);
+    }
+    this.game.player.draw(this.context);
   };
 }
 

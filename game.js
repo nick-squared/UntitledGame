@@ -1,7 +1,20 @@
 var FPS = 30;
 
 function Game(canvas, context) {
-  this.renderer = new Renderer(canvas, context);
+  this.renderer = new Renderer(this, canvas, context);
+  this.branches = [];
+
+  var testBranchList = [];
+  for (var i = 0; i < 30; i++) {
+    testBranchList[i] = [50 + i * 25, 200 - Math.pow(i, 3)];
+  }
+  this.testBranch = new Branch(testBranchList);
+  this.branches.push(this.testBranch);
+  this.player = new Player();
+  this.player.onGround = true;
+  this.player.currentSegment = this.testBranch.segments[0];
+  this.player.x = this.player.currentSegment.center[0] + this.player.width / 2 * Math.cos(this.player.currentSegment.normal);
+  this.player.y = this.player.currentSegment.center[1] - this.player.height / 2 * Math.sin(this.player.currentSegment.normal);
 
   this.onFrame = function() {
     this.update();
@@ -9,10 +22,12 @@ function Game(canvas, context) {
   };
 
   this.update = function() {
+    this.player.update();
   };
 
   this.draw = function() {
     this.renderer.clear();
+    this.renderer.draw();
   };
 
   this.start = function() {
