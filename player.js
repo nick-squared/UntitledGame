@@ -3,7 +3,7 @@ ACCELERATION = 0.8;
 DRAG = 0.1;
 GRAVITY = 1.4;
 MIN_GRAVITY = 0.25;
-STICKYNESS = 1.4;
+STICKYNESS = 1.2;
 
 function Player() {
   this.pos = new Vec2(0, 0);
@@ -70,7 +70,7 @@ function Player() {
       this.branchPos += this.speed.x;
 
       var force_gravity = GRAVITY * Math.sin(Math.abs(this.currentSegment.rotation) / 2);
-      var force_sticky = Math.abs(this.speed.x) / MAX_SPEED * STICKYNESS;
+      var force_sticky = STICKYNESS * GRAVITY * Math.abs(this.speed.x) / MAX_SPEED;
 
       if (KEYBOARD_STATE['right']) {
         this.speed.x = Math.min(MAX_SPEED, this.speed.x + ACCELERATION);
