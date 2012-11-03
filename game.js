@@ -5,16 +5,18 @@ function Game(canvas, context) {
   this.branches = [];
 
   var testBranchList = [];
-  for (var i = 0; i < 50; i++) {
-    testBranchList[i] = [50 + i * 15, 200 - 5 * Math.sin(i) - 2 * i];
+  for (var i = 0; i < 30; i++) {
+    var angle = Math.PI / 2 + i/30 * Math.PI * 2.8/2;
+    testBranchList[i] = new Vec2(400 + Math.cos(angle) * 200, 400 - Math.sin(angle) * 100);
   }
   this.testBranch = new Branch(testBranchList);
   this.branches.push(this.testBranch);
   this.player = new Player();
   this.player.onGround = true;
-  this.player.currentSegment = this.testBranch.segments[0];
-  this.player.pos[0] = this.player.currentSegment.center[0] + this.player.width / 2 * Math.cos(this.player.currentSegment.normal);
-  this.player.pos[1] = this.player.currentSegment.center[1] - this.player.height / 2 * Math.sin(this.player.currentSegment.normal);
+  this.player.currentSegment = this.testBranch.segments[20];
+  this.player.branchPos = 300;
+  this.player.pos.x = this.player.currentSegment.center.x + this.player.width / 2 * Math.cos(this.player.currentSegment.normal);
+  this.player.pos.y = this.player.currentSegment.center.y - this.player.height / 2 * Math.sin(this.player.currentSegment.normal);
 
   this.onFrame = function() {
     this.update();
@@ -23,6 +25,22 @@ function Game(canvas, context) {
 
   this.update = function() {
     this.player.update();
+
+    if (!this.player.onGround) {
+      // Do collisions with branches, and the individual segments.
+      var playerMin = this.player.pos.copy().subtract(new Vec2(this.player.width / 2, this.player.height / 2));
+      var playerNextPos = this.player.pos.copy().add(this.player.speed).add(new Vec2(this.player.width / 2, this.player.height / 2));
+      var bounds = this.player.getBounds();
+      
+      for (var i = 0; i < this.branches.length; i++) {
+        if (this.branches[i].bounds.lineIntersect(this.player.pos, playerNextPos)) {
+          var segment = this.branches[i].collide(bounds);
+          if (segment != undefined) {
+            this.player.collide(segment);
+          }
+        }
+      }
+    }
   };
 
   this.draw = function() {

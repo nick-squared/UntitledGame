@@ -1,3 +1,7 @@
+// Used for testing collisions. Very useful, so they're getting left in.
+var hitRects = [];
+var hitLines = [];
+
 function Renderer(game, canvas, context) {
   this.game = game;
   this.canvas = canvas;
@@ -15,6 +19,19 @@ function Renderer(game, canvas, context) {
       this.game.branches[i].draw(this.context);
     }
     this.game.player.draw(this.context);
+
+    // Hit detection testing, leaving in for future use.
+    this.context.strokeStyle = '#C00';
+    for(var i = 0;i < hitRects.length; i++) {
+      this.context.strokeRect(hitRects[i].topLeft.x, hitRects[i].topLeft.y, hitRects[i].width, hitRects[i].height);
+    }
+    this.context.strokeStyle = '#00C';
+    for(var i = 0;i < hitLines.length; i++) {
+      this.context.beginPath();
+      this.context.moveTo(hitLines[i][0].x, hitLines[i][0].y);
+      this.context.lineTo(hitLines[i][1].x, hitLines[i][1].y);
+      this.context.stroke();
+    }
   };
 }
 
