@@ -5,6 +5,8 @@ var KEYBOARD_STATE = {
   'left': false
 };
 
+var KEY_ACTIONS = {}; // [Object, function]
+
 $(function(){
   var rawCanvas = $('#canvas')[0];
   var context = rawCanvas.getContext('2d');
@@ -15,6 +17,9 @@ $(function(){
 
 $(window).keydown(function(event) {
   var keycode = event.which;
+  if (KEY_ACTIONS.hasOwnProperty(keycode)) {
+    KEY_ACTIONS[keycode][1].call(KEY_ACTIONS[keycode][0]);
+  }
   if (keycode == 65) {
     KEYBOARD_STATE['left'] = true;
   } else if (keycode == 87) {

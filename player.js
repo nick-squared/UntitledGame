@@ -1,4 +1,6 @@
 MAX_SPEED = 15;
+JUMP_POWER = 15;
+JUMP_ANGLE_VARIATION = Math.PI / 2;
 ACCELERATION = 0.8;
 DRAG = 0.1;
 GRAVITY = 1.4;
@@ -54,10 +56,29 @@ function Player() {
     }
   };
 
-  this.fall = function() {
+  this.distanceFromBranch = function() {
+    this.rotation = 0;
     this.pos.x -= this.width / 2 * Math.cos(this.currentSegment.normal);
     this.pos.y -= this.height / 2 * Math.sin(this.currentSegment.normal);
-    this.rotation = 0;
+  };
+
+  this.jump = function() {
+    if (!this.onGround) {
+      return;
+    }
+    this.distanceFromBranch();
+    var jumpDirection = this.currentSegment.normal + JUMP_ANGLE_VARIATION * (this.speed.x / MAX_SPEED);
+    this.speed.x = Math.cos(this.currentSegment.rotation) * this.speed.x -
+                   Math.cos(this.currentSegment.normal) * JUMP_POWER;
+    this.speed.y = Math.sin(this.currentSegment.rotation) * this.speed.x -
+                   Math.sin(this.currentSegment.normal) * JUMP_POWER;
+    this.onGround = false;
+    this.currentSegment = undefined;
+  };
+  KEY_ACTIONS[87] = [this, this.jump];
+
+  this.fall = function() {
+    this.distanceFromBranch();
     var speed = this.speed.x;
     this.speed.x = Math.cos(this.currentSegment.rotation) * speed;
     this.speed.y = Math.sin(this.currentSegment.rotation) * speed;
@@ -107,6 +128,12 @@ function Player() {
 
       this.recalculateGround();
     } else {
+      if (KEYBOARD_STATE['right']) {
+        this.speed.x = Math.min(MAX_SPEED, this.speed.x + ACCELERATION);
+      }
+      if (KEYBOARD_STATE['left']) {
+        this.speed.x = Math.max(-MAX_SPEED, this.speed.x - ACCELERATION);
+      }
       this.speed.y += GRAVITY;
       this.pos.x += this.speed.x;
       this.pos.y += this.speed.y;
