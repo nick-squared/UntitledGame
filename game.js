@@ -5,9 +5,8 @@ function Game(canvas, context) {
   this.branches = [];
 
   var testBranchList = [];
-  for (var i = 0; i < 30; i++) {
-    var angle = Math.PI / 2 + i/30 * Math.PI * 2;
-    testBranchList[i] = new Vec2(400 + Math.cos(angle) * 200, 400 - Math.sin(angle) * 100);
+  for (var i = 0; i < 250; i++) {
+    testBranchList[i] = new Vec2(400 + i * 20, 400 + Math.cos(i/25) * 200);
   }
   this.testBranch = new Branch(testBranchList);
   this.branches.push(this.testBranch);

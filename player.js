@@ -10,12 +10,13 @@ STICKYNESS = 1.2;
 function Player() {
   this.pos = new Vec2(0, 0);
   this.branchPos = 0;
-  this.width = 20;
-  this.height = 20;
+  this.width = 40;
+  this.height = 40;
   this.speed = new Vec2(0, 0);
   this.onGround = false;
   this.rotation = 0;
   this.currentSegment = undefined;
+  this.texture = new AnimatedTexture('raccoon.png', 4, 2, this.width, this.height);
 
   this.getBounds = function() {
     var topLeft = this.pos.copy().subtract(new Vec2(this.width / 2, this.height / 2));
@@ -31,9 +32,9 @@ function Player() {
     context.save();
     context.translate(this.pos.x, this.pos.y);
     context.rotate(this.rotation);
-    context.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
-    context.fillStyle = "#000";
-    context.fillRect(-3, -this.height / 2 + 4, 6, 2);
+    context.scale(this.speed.x < 0 ? -1 : 1, 1);
+    context.translate(-this.width / 2, -this.height / 2);
+    this.texture.drawNext(context);
     context.restore();
   };
 

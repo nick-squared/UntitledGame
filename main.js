@@ -7,12 +7,10 @@ var KEYBOARD_STATE = {
 
 var KEY_ACTIONS = {}; // [Object, function]
 
-$(function(){
-  var rawCanvas = $('#canvas')[0];
-  var context = rawCanvas.getContext('2d');
+var TEXTURES = {};
 
-  var game = new Game(rawCanvas, context);
-  game.start();
+$(function(){
+  loadTextures();
 });
 
 $(window).keydown(function(event) {
@@ -43,3 +41,27 @@ $(window).keyup(function(event) {
     KEYBOARD_STATE['down'] = false;
   }
 });
+
+function startGame() {
+  var rawCanvas = $('#canvas')[0];
+  var context = rawCanvas.getContext('2d');
+
+  var game = new Game(rawCanvas, context);
+  game.start();
+}
+function loadTextures() {
+  var texturesLoaded = 0;
+  var files = ['background.jpg', 'raccoon.png', 'repeating-forest.png'];
+  for (var i = 0; i < files.length; i++) {
+    var img = new Image();
+    img.onload = function(e) {
+      TEXTURES[this.key] = this;
+      texturesLoaded ++;
+      if (texturesLoaded == files.length) {
+        startGame();
+      }
+    };
+    img.key = files[i];
+    img.src = files[i];
+  }
+}

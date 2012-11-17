@@ -9,6 +9,8 @@ function Renderer(game, canvas, context) {
   this.height = canvas.height;
   this.camera = new Camera(this.width, this.height);
   this.context = context;
+  this.background = TEXTURES['repeating-forest.png'];
+  this.pattern = context.createPattern(this.background, 'repeat');
 
   this.clear = function() {
     this.context.clearRect(0, 0, this.width, this.height);
@@ -18,6 +20,11 @@ function Renderer(game, canvas, context) {
     this.context.save();
     this.camera.center(this.game.player.pos.x, this.game.player.pos.y);
     this.camera.translate(this.context);
+
+    // Draw background.
+    this.context.fillStyle = this.pattern;
+    this.context.fillRect(this.camera.x, this.camera.y, this.width, this.height);
+
     for (var i = 0; i < this.game.branches.length; i++) {
       this.game.branches[i].draw(this.context);
     }
@@ -36,6 +43,34 @@ function Renderer(game, canvas, context) {
       this.context.stroke();
     }
     this.context.restore();
+  };
+}
+
+function AnimatedTexture(name, frames, frameDuration, width, height) {
+  this.frame = 0;
+  this.frames = frames;
+  this.currentFrameStep = 0;
+  this.frameDuration = frameDuration;
+  this.image = TEXTURES[name];
+  this.frameWidth = this.image.width / frames;
+  this.width = width;
+  this.height = height;
+
+  this.update = function() {
+    if (this.currentFrameStep++ > this.frameDuration) {
+      this.frame = (this.frame + 1) % this.frames;
+      this.currentFrameStep = 0;
+    }
+  };
+
+  this.draw = function(context) {
+    context.drawImage(this.image, this.frameWidth * this.frame, 0, this.frameWidth,
+                           this.image.height, 0, 0, this.width, this.height);
+  };
+
+  this.drawNext = function(context) {
+    this.draw(context);
+    this.update();
   };
 }
 
