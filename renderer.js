@@ -15,6 +15,9 @@ function Renderer(game, canvas, context) {
   };
 
   this.draw = function() {
+    this.context.save();
+    this.camera.center(this.game.player.pos.x, this.game.player.pos.y);
+    this.camera.translate(this.context);
     for (var i = 0; i < this.game.branches.length; i++) {
       this.game.branches[i].draw(this.context);
     }
@@ -32,6 +35,7 @@ function Renderer(game, canvas, context) {
       this.context.lineTo(hitLines[i][1].x, hitLines[i][1].y);
       this.context.stroke();
     }
+    this.context.restore();
   };
 }
 
@@ -44,5 +48,9 @@ function Camera(width, height) {
   this.center = function(x, y) {
     this.x = x - this.width / 2;
     this.y = y - this.height / 2;
+  };
+
+  this.translate = function(context) {
+    context.translate(-this.x, -this.y);
   };
 }

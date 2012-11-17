@@ -6,7 +6,7 @@ function Game(canvas, context) {
 
   var testBranchList = [];
   for (var i = 0; i < 30; i++) {
-    var angle = Math.PI / 2 + i/30 * Math.PI * 2.8/2;
+    var angle = Math.PI / 2 + i/30 * Math.PI * 2;
     testBranchList[i] = new Vec2(400 + Math.cos(angle) * 200, 400 - Math.sin(angle) * 100);
   }
   this.testBranch = new Branch(testBranchList);
@@ -31,7 +31,7 @@ function Game(canvas, context) {
       var playerMin = this.player.pos.copy().subtract(new Vec2(this.player.width / 2, this.player.height / 2));
       var playerNextPos = this.player.pos.copy().add(this.player.speed).add(new Vec2(this.player.width / 2, this.player.height / 2));
       var bounds = this.player.getBounds();
-      
+
       for (var i = 0; i < this.branches.length; i++) {
         if (this.branches[i].bounds.lineIntersect(this.player.pos, playerNextPos)) {
           var segment = this.branches[i].collide(bounds);

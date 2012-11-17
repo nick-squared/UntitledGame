@@ -16,7 +16,9 @@ function Player() {
   this.currentSegment = undefined;
 
   this.getBounds = function() {
-    return new Rectangle(this.pos, this.pos.copy().add(new Vec2(this.width, this.height)));
+    var topLeft = this.pos.copy().subtract(new Vec2(this.width / 2, this.height / 2));
+    var bottomRight = this.pos.copy().add(new Vec2(this.width / 2, this.height / 2));
+    return new Rectangle(topLeft, bottomRight);
   };
 
   this.getCenter = function() {
@@ -35,7 +37,13 @@ function Player() {
 
   this.recalculateGround = function() {
     if (this.onGround) {
-      var newSegment = this.currentSegment.branch.getSegment(this.branchPos);
+      var pseudoBranchPos = this.branchPos;
+      if (this.currentSegment.right == undefined && this.branchPos > this.currentSegment.start + this.currentSegment.length) {
+        pseudoBranchPos = this.branchPos - this.width / 2;
+      } else if (this.currentSegment.left == undefined && this.branchPos < 0) {
+        pseudoBranchPos = this.branchPos + this.width / 2;
+      }
+      var newSegment = this.currentSegment.branch.getSegment(pseudoBranchPos);
       if (newSegment == undefined) {
         this.fall();
       } else {
@@ -47,6 +55,8 @@ function Player() {
   };
 
   this.fall = function() {
+    this.pos.x -= this.width / 2 * Math.cos(this.currentSegment.normal);
+    this.pos.y -= this.height / 2 * Math.sin(this.currentSegment.normal);
     this.rotation = 0;
     var speed = this.speed.x;
     this.speed.x = Math.cos(this.currentSegment.rotation) * speed;
@@ -86,6 +96,7 @@ function Player() {
 
       if (this.currentSegment.upsideDown) {
         if (force_gravity > force_sticky) {
+          console.log(force_sticky, force_gravity);
           this.fall();
         }
       } else {
