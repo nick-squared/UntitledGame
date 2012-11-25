@@ -42,6 +42,26 @@ function Renderer(game, canvas, context) {
       this.context.lineTo(hitLines[i][1].x, hitLines[i][1].y);
       this.context.stroke();
     }
+
+    this.context.restore();
+    this.drawUI();
+  };
+
+  // UI Constants
+  this.healthBarTopLeft = new Vec2(10, 10);
+  this.maxHeartCount = 5;
+  this.heartBarLength = 150;
+  this.heartIcon = TEXTURES['heart.png'];
+  this.heartScale = this.heartBarLength / (this.heartIcon.width * this.maxHeartCount);
+  this.healthPattern = this.context.createPattern(this.heartIcon, 'repeat');
+  this.drawUI = function() {
+    // Draw health.
+    var width = this.heartIcon.width * this.maxHeartCount * 1;// * this.game.player.health;
+    this.context.fillStyle = this.healthPattern;
+    this.context.save();
+    this.context.translate(this.healthBarTopLeft.x, this.healthBarTopLeft.y);
+    this.context.scale(this.heartScale, this.heartScale);
+    this.context.fillRect(0, 0, width, this.heartIcon.height);
     this.context.restore();
   };
 }
