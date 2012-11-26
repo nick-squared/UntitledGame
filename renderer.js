@@ -54,6 +54,12 @@ function Renderer(game, canvas, context) {
   this.heartIcon = TEXTURES['heart.png'];
   this.heartScale = this.heartBarLength / (this.heartIcon.width * this.maxHeartCount);
   this.healthPattern = this.context.createPattern(this.heartIcon, 'repeat');
+
+  this.weaponStatusTopLeft = new Vec2(722,462);
+  this.currentWeaponMiddle = new Vec2(50, 80);
+  this.ammoMiddle = new Vec2(100, 26);
+  this.ammoFont = '13px Georgia'
+  this.weaponStatusBackground = TEXTURES['weapon-back.png'];
   this.drawUI = function() {
     // Draw health.
     var width = this.heartIcon.width * this.maxHeartCount * 1;// * this.game.player.health;
@@ -62,6 +68,16 @@ function Renderer(game, canvas, context) {
     this.context.translate(this.healthBarTopLeft.x, this.healthBarTopLeft.y);
     this.context.scale(this.heartScale, this.heartScale);
     this.context.fillRect(0, 0, width, this.heartIcon.height);
+    this.context.restore();
+
+    // Draw weapon stuff
+    this.context.save();
+    this.context.translate(this.weaponStatusTopLeft.x, this.weaponStatusTopLeft.y);
+    this.context.drawImage(this.weaponStatusBackground, 0, 0);
+    this.context.font = this.ammoFont;
+    var ammo = Math.round(10 * Math.random()); // this.game.player.currentWeapon.ammo;
+    var textSize = new Vec2(this.context.measureText(ammo).width, 13);
+    this.context.strokeText(ammo, this.ammoMiddle.x - textSize.x / 2, this.ammoMiddle.y + textSize.y / 2);
     this.context.restore();
   };
 }

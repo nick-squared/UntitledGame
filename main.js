@@ -51,7 +51,7 @@ function startGame() {
 }
 function loadTextures() {
   var texturesLoaded = 0;
-  var files = ['heart.png', 'raccoon.png', 'repeating-forest.png'];
+  var files = ['heart.png', 'raccoon.png', 'repeating-forest.png', 'weapon-back.png'];
   for (var i = 0; i < files.length; i++) {
     var img = new Image();
     img.onload = function(e) {
